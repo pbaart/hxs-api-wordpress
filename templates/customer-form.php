@@ -4,15 +4,69 @@
 		<a href="<?PHP echo get_option( "hxs-domain-c-page" ); ?>"><?PHP echo __("domain check"); ?></a> <span class="divider">/</span>
 	</li>
 	<li class="active">
-		<?PHP echo __("customer"); ?></a> <span class="divider">/</span>
+		<?PHP echo __("customer"); ?> <span class="divider">/</span>
 	</li>
 	<li>
-		<?PHP echo __("review"); ?></a> <span class="divider">/</span>
+		<?PHP echo __("review"); ?> <span class="divider">/</span>
 	</li>
 	<li>
-		<?PHP echo __("order"); ?></a>
+		<?PHP echo __("finished"); ?></a>
 	</li>
 </ul>
+
+<form method="POST" action="?validate=" class="form-horizontal" id="hxs-login">
+	<fieldset><legend><?PHP echo ( get_option( "hxs-reseller-license" ) != "reseller" ? __("Existing HostingXS B.V. customer") : __("Existing customer") ); ?></legend>
+		
+		<div class="control-group">
+			<label class="control-label"><?PHP echo __("Username"); ?></label>
+			<div class="controls">
+				<input type="text" name="hxs-login[un]" id="hxs-username" class="hxs-username" /><span class="help-inline"></span>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label"><?PHP echo __("Password"); ?></label>
+			<div class="controls">
+				<input type="password" name="hxs-login[pw]" class="hxs-password" /><span class="help-inline"></span>
+			</div>
+		</div>
+	</fieldset>
+	<div class="form-actions">
+		<a href="<?PHP echo get_option( "hxs-domain-c-page" ); ?>" class="btn"><?PHP echo __("go back"); ?></a>&nbsp;
+		<input type="submit" class="btn btn-primary" name="submit" value="<?PHP echo __("Continue - review order"); ?>" />
+	</div>
+	<script>
+		jQuery(function() {
+			jQuery("#hxs-login").submit( function(e) {
+				e.preventDefault();
+				var $form		= jQuery(this);
+				var $unfield		= $form.find(".hxs-username");
+				var $pwfield		= $form.find(".hxs-password");
+				if( $pwfield.val() == "" ) {
+					$pwfield.closest(".control-group").addClass("error").find("span.help-inline").text("<?PHP echo __("Please enter a password."); ?>");
+					return false;
+				}
+				
+				jQuery.ajax({
+					url: 		"<?PHP echo admin_url( 'admin-ajax.php' ); ?>",
+					data:		{
+						action:		"hxs_account_check",
+						username: 	$unfield.val(),
+					},
+					type:		'POST',
+					success:	function( html ) {
+						if( html == "false" ) {
+							$unfield.closest(".control-group").addClass("error").find("span.help-inline").text("<?PHP echo __("Account is unknown, please create a new account."); ?>");
+							
+							return false;
+						} else {
+							return true;
+						} 
+					}
+				});
+			});
+		});
+	</script>
+</form>
 
 <form method="POST" action="?validate=" class="form-horizontal">
 	<fieldset><legend><?PHP echo __("Personal information"); ?></legend>
@@ -154,32 +208,19 @@
 		<div class="control-group well well-small">
 			<label class="control-label"><?PHP echo __("Username"); ?></label>
 			<div class="controls">
-				<input type="text" name="hxs-customer[un]" id="hxs-username" /><span class="help-inline"></span>
+				<input type="text" name="hxs-customer[un]" id="hxs-username" class="hxs-username" /><span class="help-inline"></span>
 				<p class="help-block"><?PHP echo __("Between 3 and 32 characters, only lowercase, numbers and _ or -. Must start with a letter."); ?></p>
 			</div>
 			<script>
 			jQuery(function() {
-				jQuery( "#hxs-username").keyup( function() {
+				jQuery( ".hxs-username").keyup( function() {
 					var regx	= /^[a-z]([-_a-z0-9]){2,31}$/;
 					var $field	= jQuery(this);
 					if( !regx.test(jQuery(this).val()) && !jQuery(this).closest(".control-group").hasClass("error")) {
 						jQuery(this).closest(".control-group").addClass("error");
-					} else if( regx.test(jQuery(this).val()) && jQuery(this).closest(".control-group").hasClass("error") ) {
-						if( this.ajax_call ) this.ajax_call.abort();
-
-						this.ajax_call = jQuery.ajax({
-							url: 		"https://api.hostingxs.nl/v2/account/available/" + jQuery(this).val() + "?apikey=<?PHP echo $c -> getApikey(); ?>",
-							crossDomain: 	true,
-							dataType:	"text",
-							success:	function( isavailable ) {
-								if( isavailable == "true" ) {
-									$field.closest(".controls").find("span.help-inline").html("");
-									$field.closest(".control-group").removeClass("error");
-								} else if( isavailable == "false") {
-									$field.closest(".controls").find("span.help-inline").html("<?PHP echo __("Account name already taken"); ?>");
-								} 
-							}
-						});
+					} else if( regx.test( jQuery(this).val() )) {
+						$field.closest(".controls").find("span.help-inline").html("");
+						$field.closest(".control-group").removeClass("error");
 						
 					}
 				});

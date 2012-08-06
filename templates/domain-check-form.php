@@ -19,13 +19,13 @@
 		<?PHP echo __("domain check"); ?> <span class="divider">/</span>
 	</li>
 	<li>
-		<?PHP echo __("customer"); ?></a> <span class="divider">/</span>
+		<?PHP echo __("customer"); ?> <span class="divider">/</span>
 	</li>
 	<li>
-		<?PHP echo __("review"); ?></a> <span class="divider">/</span>
+		<?PHP echo __("review"); ?> <span class="divider">/</span>
 	</li>
 	<li>
-		<?PHP echo __("order"); ?></a>
+		<?PHP echo __("finished"); ?>
 	</li>
 </ul>
 <h3><?PHP echo $dom -> name; ?></h3>

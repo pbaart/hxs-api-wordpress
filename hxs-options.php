@@ -81,7 +81,7 @@ function hxs_input_reseller_type() {
 			$value = "reseller";
 		}
 		if( $c -> auth -> sandbox == 1 ) {
-			echo __("Be aware that your API connection is currently in Sandbox mode.")."<br />";
+			echo __("Be aware that your webservice connection is currently in Sandbox mode.")."<br />";
 		}
 	} elseif( get_option( "hxs-reseller-type" ) ) {
 		$value	= get_option( "hxs-reseller-type" ); 
