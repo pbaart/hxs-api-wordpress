@@ -143,7 +143,7 @@
 			<label class="control-label"><?PHP echo __("Country"); ?></label>
 			<div class="controls">
 				<input type="text" name="hxs-customer[country]" placeholder="UK" />
-				<span class="help-inline"><?PHP echo __("Use the ISO-code for you country."); ?></span>
+				<span class="help-inline"><?PHP echo __("Use the ISO-code of your country."); ?></span>
 			</div>
 		</div>
 	</fieldset>

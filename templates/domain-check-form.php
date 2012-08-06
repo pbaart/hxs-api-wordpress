@@ -1,4 +1,4 @@
-<form class="form-horizontal well well-large">
+<form class="form-horizontal well well-large" action="<?PHP echo get_option( "hxs-domain-c-page" ); ?>" method="POST">
 	<div class="control-group">
 		<label class="control-label"><?PHP echo __("Domain Check"); ?></label>
 		<div class="controls">
