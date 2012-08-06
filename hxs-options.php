@@ -34,9 +34,11 @@ function hxs_admin_init() {
 	register_setting( "hxs-settings" , "hxs-reseller-pw" , "hxs_validate_pw" );
 	register_setting( "hxs-settings" , "hxs-domain-c-page" , "hxs_validate_nothing" );
 	register_setting( "hxs-settings" , "hxs-domain-c-widget" , "hxs_validate_nothing" );
+	register_setting( "hxs-settings" , "hxs-reseller-type" , "hxs_input_reseller_pw" );
 	add_settings_section( "hxs_settings_main" , "HostingXS Reseller info" , "hxs_settings_page_text" , "hxs" );
 	add_settings_field( "reseller-id" , "HostingXS Reseller ID" , "hxs_input_reseller_id" , "hxs" , "hxs_settings_main" );
 	add_settings_field( "reseller-pw" , "HostingXS Reseller Password" , "hxs_input_reseller_pw" , "hxs" , "hxs_settings_main" );
+	add_settings_field( "reseller-type" , "HostingXS webservice license" , "hxs_input_reseller_type" , "hxs" , "hxs_settings_main" );
 	add_settings_field( "domain-c-page" , "Send domain check requests to page" , "hxs_input_domain_c_page" , "hxs" , "hxs_settings_main" );
 	add_settings_field( "domain-c-widget" , "Default value for domain check input box" , "hxs_input_domain_c_widget" , "hxs" , "hxs_settings_main" );
 }
@@ -71,4 +73,21 @@ function hxs_input_reseller_pw() {
 }
 function hxs_settings_page_text() {
 	echo "<p>Setup your reseller credentials provided by <a href='http://www.hostingxs.nl'>HostingXS</a>.</p>";
+}
+function hxs_input_reseller_type() {
+	$value	= "inactive";
+	if( $c = new hxsclient( get_option( "hxs-reseller-id" ) , get_option( "hxs-reseller-pw" ) ) ) {
+		if( (bool) $c -> auth -> info -> isreseller ) {
+			$value = "reseller";
+		}
+		if( $c -> auth -> sandbox == 1 ) {
+			echo __("Be aware that your API connection is currently in Sandbox mode.")."<br />";
+		}
+	} elseif( get_option( "hxs-reseller-type" ) ) {
+		$value	= get_option( "hxs-reseller-type" ); 
+	}
+		echo "<input disabled name='hxs-reseller-type' type='radio' value='inactive' ".($value == "inactive"	? "checked" 	: false)." /> ". __("Inactive license");
+	echo "<br /><input disabled name='hxs-reseller-type' type='radio' value='affiliate' ".($value == "affiliate" 	? "checked" 	: false)." /> ".__("Affiliate license");
+	echo "<br /><input disabled name='hxs-reseller-type' type='radio' value='reseller' ".($value == "reseller" 	? "checked" 	: false)." />".__("Reseller license");
+	
 }
