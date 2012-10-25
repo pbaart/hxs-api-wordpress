@@ -29,7 +29,7 @@
 	</li>
 </ul>
 <h3><?PHP echo $dom -> name; ?></h3>
-<form class="form-horizontal" method='POST' action='?customer=' id="years">
+<form class="form-horizontal" method='POST' action='?step=customer' id="years">
 	<div class="control-group">
 		
 		
